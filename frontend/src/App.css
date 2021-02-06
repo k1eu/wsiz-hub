@@ -1,14 +1,68 @@
 .App {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #282c34;
+  height: 100vh;
+  width: 100vw;
 }
 
 .App-header {
+  margin-top: 5vh;
   background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.post-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50vw;
+  height: 25vh;
+  margin-top: 10vh;
+}
+.post-text {
+  width:100%;
+  height:70%;
+  font-size: calc(0.7vh + 0.7vw);
+  padding: 1%;
+}
+.post-submit {
+  margin-top: 2%;
+  width: 20%;
+  height: 20%;
+}
+.posts-view-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width:50vw;
+  background-color: azure;
+  list-style-type: none ;
+  padding: 0;
+  padding:1%
+}
+.post-wrap {
+  width: 100%;
+  height: 20vh;
+}
+.top-row {
+  display: flex;
+  width: 100%;
+  height:20%;
+  flex: row;
+  justify-content: space-between;
+}
+.middle-row-post {
+  height:50%;
+  text-align: left;
+}
+.bottom-row {
+  background-color: cadetblue;
 }
