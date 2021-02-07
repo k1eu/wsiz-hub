@@ -2,6 +2,7 @@ from aiohttp import web
 from aiohttp.web_response import Response
 import json
 from storage import Storage
+import aiohttp_cors
 
 storageConnection = Storage('users.json','posts.json')
 storageConnection.fetchUserFromJSON()
@@ -11,6 +12,11 @@ postStorage = storageConnection.storage['posts']
 
 # HANDLING USER REQUESTS
 async def handle(request):
+    return web.json_response(userStorage[0],headers= {
+        'Access-Control-Allow-Origin': 'null'
+    })
+
+async def handler(request):
     return web.json_response(userStorage[0])
 
 async def handleUserID(request):
@@ -60,11 +66,24 @@ app = web.Application()
 app.add_routes([web.get('/', handle),
                 web.get('/users', handleUsers),
                 web.get('/users/{userID}', handleUserID),
-                web.get('/posts', handlePosts),
+#                web.get('/posts', handlePosts),
                 web.get('/posts/{postID}', handlePostID),
                 web.post('/add-user', handleAddingUsers),
                 web.post('/add-post', handleAddingPosts)
                 ])
+
+cors = aiohttp_cors.setup(app)
+
+posts = cors.add(app.router.add_resource("/posts"))
+route = cors.add(
+    posts.add_route("GET", handlePosts), {
+        "http://localhost:3000": aiohttp_cors.ResourceOptions(
+            allow_credentials=True,
+            expose_headers=("X-Custom-Server-Header",),
+            allow_headers=("X-Requested-With", "Content-Type"),
+            max_age=3600,
+        )
+    })
 
 if __name__ == '__main__':
     web.run_app(app)

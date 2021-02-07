@@ -2,7 +2,7 @@ import React from 'react';
 import './Post.css';
 
 interface PostProps {
-    author: string,
+    author: number,
     creation_time: string
     postValue: string
   }
