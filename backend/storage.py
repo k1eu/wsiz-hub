@@ -1,5 +1,5 @@
 import json
-
+from datetime import datetime
 class Storage:
     storage = {}
     storage['users'] = []
@@ -53,11 +53,12 @@ class Storage:
     def getPostsMaxId(self) -> int:
         return len(self.storage['posts'])
     
-    def addPost(self, author_id, creation_time, post_text):
+    def addPost(self, author_id, post_text):
+        curr_date = str(datetime.now().replace(microsecond=0))
         temp_post = {
             'post_id' : self.getPostsMaxId()+1,
             'author_id' : author_id,
-            'creation_time' : creation_time,
+            'creation_time' : curr_date,
             'post_text' : post_text,
             'comments' : []
         }

@@ -5,9 +5,11 @@ from storage import Storage
 
 storageConnection = Storage('users.json','posts.json')
 storageConnection.fetchUserFromJSON()
+storageConnection.fetchPostsFromJSON()
 userStorage = storageConnection.storage['users']
+postStorage = storageConnection.storage['posts']
 
-#template implementation of server
+# HANDLING USER REQUESTS
 async def handle(request):
     return web.json_response(userStorage[0])
 
@@ -16,23 +18,53 @@ async def handleUserID(request):
     return web.json_response(userStorage[id])
 
 async def handleUsers(request):
-    id = int(request.match_info.get('userID', 0))
     return web.json_response(userStorage)
 
-async def handleAdding(request):
+async def handleAddingUsers(request):
     if request.can_read_body:
         body = await request.json()
-        print(body["first_name"])
-        storageConnection.addUser(body["first_name"],body["second_name"])
-        return web.Response(text=f'User listed below has been added.\n{body}')
+        try:
+            first_name = body['first_name']
+            second_name = body['second_name']
+            print(first_name,' ',second_name)
+            storageConnection.addUser(first_name,second_name)
+            return web.Response(text=f'User listed below has been added.\n{first_name} {second_name}')
+        except:
+            return web.Response('There has been problem with processing your data')
+    else:
+        return web.Response(text="Error! Nothing was provided to be added.")
+
+# HANDLING POSTS REQUESTS
+async def handlePostID(request):
+    id = int(request.match_info.get('postID', 0))
+    return web.json_response(userStorage[id])
+
+async def handlePosts(request):
+    return web.json_response(postStorage)        
+
+async def handleAddingPosts(request):
+    if request.can_read_body:
+        body = await request.json()
+        try:
+            author_id = body['author_id']
+            post_text = body['post_text']
+            print(f'{post_text}\n by {author_id}')
+            storageConnection.addPost(author_id,post_text)
+            return web.Response(text=f'Post listed below has been added.\n{post_text}')
+        except:
+            return web.Response(text='There has been problem with proccessing your data')
     else:
         return web.Response(text="Error! Nothing was provided to be added.")
 
 app = web.Application()
 app.add_routes([web.get('/', handle),
-                web.get('/users/{userID}', handleUserID),
                 web.get('/users', handleUsers),
-                web.post('/add-user', handleAdding)])
+                web.get('/users/{userID}', handleUserID),
+                web.get('/posts', handlePosts),
+                web.get('/posts/{postID}', handlePostID),
+                web.post('/add-user', handleAddingUsers),
+                web.post('/add-post', handleAddingPosts)
+                ])
 
 if __name__ == '__main__':
     web.run_app(app)
