@@ -69,14 +69,14 @@ app.add_routes([web.get('/', handle),
 #                web.get('/posts', handlePosts),
                 web.get('/posts/{postID}', handlePostID),
                 web.post('/add-user', handleAddingUsers),
-                web.post('/add-post', handleAddingPosts)
+#                web.post('/add-post', handleAddingPosts)
                 ])
 
 cors = aiohttp_cors.setup(app)
 
-posts = cors.add(app.router.add_resource("/posts"))
-route = cors.add(
-    posts.add_route("GET", handlePosts), {
+get_posts = cors.add(app.router.add_resource("/posts"))
+get_posts_route = cors.add(
+    get_posts.add_route("GET", handlePosts), {
         "http://localhost:3000": aiohttp_cors.ResourceOptions(
             allow_credentials=True,
             expose_headers=("X-Custom-Server-Header",),
@@ -84,6 +84,18 @@ route = cors.add(
             max_age=3600,
         )
     })
+
+post_posts = cors.add(app.router.add_resource("/add-post"))
+post_posts_route = cors.add(
+    post_posts.add_route("POST", handleAddingPosts), {
+        "http://localhost:3000": aiohttp_cors.ResourceOptions(
+            allow_credentials=True,
+            expose_headers=("X-Custom-Server-Header",),
+            allow_headers=("X-Requested-With", "Content-Type"),
+            max_age=3600,
+        )
+    }
+)
 
 if __name__ == '__main__':
     web.run_app(app)

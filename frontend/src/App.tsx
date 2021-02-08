@@ -6,6 +6,7 @@ import axios from 'axios'
 interface AppState {
   postValue: string
   posts: Array<Posts>
+  userID: number
 }
 
 interface Posts {
@@ -20,8 +21,9 @@ class App extends React.Component<{},AppState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      postValue: "this is a post people can write here",
-      posts: []
+      postValue: "",
+      posts: [],
+      userID: 3
     }
     this.handlePostInputChange = this.handlePostInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -31,13 +33,16 @@ class App extends React.Component<{},AppState> {
   componentDidMount() {
     this.fetchPosts()
   }
+  componentDidUpdate() {
+    
+  }
 
   fetchPosts() {
     axios.get('http://localhost:8080/posts')
       .then((res => {
         console.log(res)
         this.setState({
-          posts: res.data
+          posts: res.data.reverse()
         })
       }))
       .catch((err) => {
@@ -45,10 +50,26 @@ class App extends React.Component<{},AppState> {
       })
   }
 
+  addPost() {
+    axios.post('http://localhost:8080/add-post', {
+      author_id: this.state.userID,
+      post_text: this.state.postValue
+    })
+      .then((res) => {
+        console.log(res)
+        this.fetchPosts()
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+      
+  }
+
   handlePostInputChange(e: any) {
     this.setState({postValue : e.target.value});
   }
   handleSubmit(e: any) {
+    this.addPost()
     alert('sent')
   }
 
@@ -59,7 +80,7 @@ class App extends React.Component<{},AppState> {
           Starter Project
         </header>
         <form onSubmit={this.handleSubmit} className="post-form">
-          <textarea value={this.state.postValue} onChange={this.handlePostInputChange} className="post-text"/>
+          <textarea placeholder="You can write something here..." value={this.state.postValue} onChange={this.handlePostInputChange} className="post-text"/>
           <input type="submit" value="Submit!" className="post-submit"/>
         </form>
         <ul className="posts-view-wrapper">
