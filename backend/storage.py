@@ -24,7 +24,8 @@ class Storage:
             json.dump(self.storage['users'], outfile)
 
     def getUsersMaxId(self) -> int:
-        return len(self.storage['users'])
+        users_nr = len(self.storage['users'])
+        return self.storage['users'][users_nr-1]['id']
 
     def addUser(self, first_name, second_name):
         temp_usr = {
@@ -37,6 +38,34 @@ class Storage:
 
     def listUsers(self):
         return self.storage['users']
+
+    def getUserDetailsFromId(self,id):
+        users_number = len(self.storage['users'])
+        if id-1 >= users_number:
+            tempId = self.storage['users'][users_number-1]['id']
+            if id > tempId:
+                return 'error'
+        else:
+            tempId = self.storage['users'][id-1]['id']
+        if tempId != id:
+            if tempId > id:
+                for i in range(tempId,-1,-1):
+                    try:
+                        if self.storage['users'][i]['id'] == id:
+                            return self.storage['users'][i]
+                    except:
+                        return 'error'
+            elif tempId < id:
+                for i in range(tempId,len(self.storage['users'])):
+                    try:
+                        if self.storage['users'][i]['id'] == id:
+                            return self.storage['users'][i]
+                    except:
+                        return 'error'
+
+        else :
+            print(id, tempId)
+            return self.storage['users'][id-1]
 
     # POST MANAGEMENT PART
 
@@ -51,13 +80,18 @@ class Storage:
             json.dump(self.storage['posts'], outfile)
     
     def getPostsMaxId(self) -> int:
-        return len(self.storage['posts'])
+        posts_nr = len(self.storage['posts'])
+        return self.storage['posts'][posts_nr-1]['post_id']
     
     def addPost(self, author_id, post_text):
         curr_date = str(datetime.now().replace(microsecond=0))
+        first_name = self.getUserDetailsFromId(author_id)['first_name']
+        second_name = self.getUserDetailsFromId(author_id)['second_name'] 
+        author_name = f'{first_name} {second_name}'
         temp_post = {
             'post_id' : self.getPostsMaxId()+1,
             'author_id' : author_id,
+            'author_name' : author_name,
             'creation_time' : curr_date,
             'post_text' : post_text,
             'comments' : []

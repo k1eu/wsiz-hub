@@ -2,20 +2,8 @@ import React from 'react';
 import './App.css';
 import Post from './components/Post/Post'
 import axios from 'axios'
+import {AppState} from './interfaces/interfaces'
 
-interface AppState {
-  postValue: string
-  posts: Array<Posts>
-  userID: number
-}
-
-interface Posts {
-  post_id: number,
-  author_id: number,
-  creation_time: string,
-  post_text: string,
-  comments: Array<any>
-}
 
 class App extends React.Component<{},AppState> {
   constructor(props: any) {
@@ -23,7 +11,7 @@ class App extends React.Component<{},AppState> {
     this.state = {
       postValue: "",
       posts: [],
-      userID: 3
+      userID: 2
     }
     this.handlePostInputChange = this.handlePostInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -85,7 +73,7 @@ class App extends React.Component<{},AppState> {
         </form>
         <ul className="posts-view-wrapper">
           {this.state.posts.map((post) => (
-            <Post author={post.author_id} creation_time={post.creation_time} postValue={post.post_text}></Post>
+            <Post author_id={post.author_id} author_name={post.author_name} creation_time={post.creation_time} postValue={post.post_text}></Post>
           ))}
         </ul>
       </div>
