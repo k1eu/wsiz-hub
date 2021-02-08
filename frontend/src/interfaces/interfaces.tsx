@@ -2,6 +2,9 @@ export interface AppState {
     postValue: string
     posts: Array<Posts>
     userID: number
+    image: string
+    imgBase64: string
+    imgHiddenPreview: boolean
   }
   
 export interface Posts {

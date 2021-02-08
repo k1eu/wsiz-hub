@@ -11,10 +11,15 @@ class App extends React.Component<{},AppState> {
     this.state = {
       postValue: "",
       posts: [],
-      userID: 2
+      userID: 2,
+      image: '',
+      imgBase64: '',
+      imgHiddenPreview: true
     }
     this.handlePostInputChange = this.handlePostInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmit2 = this.handleSubmit2.bind(this);
+    this.onImageChange = this.onImageChange.bind(this)
   };
   
   
@@ -60,6 +65,18 @@ class App extends React.Component<{},AppState> {
     this.addPost()
     alert('sent')
   }
+  handleSubmit2(e: any) {
+    const imageToBase64 = require('image-to-base64')
+    alert(this.state.image)
+  }
+  onImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (event.target.files && event.target.files[0]){
+      this.setState({
+        image: URL.createObjectURL(event.target.files[0]),
+        imgHiddenPreview: false
+      })
+    }
+  }
 
   render(){
     return (
@@ -67,9 +84,15 @@ class App extends React.Component<{},AppState> {
         <header className="App-header">
           Starter Project
         </header>
-        <form onSubmit={this.handleSubmit} className="post-form">
-          <textarea placeholder="You can write something here..." value={this.state.postValue} onChange={this.handlePostInputChange} className="post-text"/>
-          <input type="submit" value="Submit!" className="post-submit"/>
+        <form onSubmit={this.handleSubmit2} className="post-form">
+          <div className="post-and-img">
+            <textarea placeholder="You can write something here..." value={this.state.postValue} onChange={this.handlePostInputChange} className={this.state.imgHiddenPreview ? 'post-text-full' : 'post-text'} />
+            <img className="add-img-preview" src={this.state.image} hidden={this.state.imgHiddenPreview}/>
+          </div>
+          <div className="buttons-post">
+            <input accept="image/*,.png,.jpg,.jpeg,.svg" type="submit" value="Submit!" className="post-submit"/>
+            <input type="file" onChange={this.onImageChange} name="filename" id="file"/>
+          </div>
         </form>
         <ul className="posts-view-wrapper">
           {this.state.posts.map((post) => (

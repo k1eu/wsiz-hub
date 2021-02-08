@@ -27,19 +27,31 @@ html {
   flex-direction: column;
   align-items: center;
   width: 50vw;
-  height: 25vh;
+  height: 35vh;
   margin-top: 10vh;
 }
-.post-text {
+.post-and-img {
   width:100%;
-  height:70%;
-  font-size: calc(0.7vh + 0.7vw);
-  padding: 1%;
+  height:50%;
+  display:flex;
+  flex-direction: row;
 }
-.post-submit {
-  margin-top: 2%;
-  width: 20%;
-  height: 20%;
+.post-text {
+  width:70%;
+  height:100%;
+  font-size: calc(0.7vh + 0.7vw);
+}
+.post-text-full {
+  font-size: calc(0.7vh + 0.7vw);
+  width:100%
+}
+.add-img-preview {
+  height:100%;
+  object-fit: contain;
+}
+.buttons-post {
+  height:20%;
+  margin-top:3%;
 }
 .posts-view-wrapper {
   display: flex;
