@@ -12,9 +12,7 @@ postStorage = storageConnection.storage['posts']
 
 # HANDLING USER REQUESTS
 async def handle(request):
-    return web.json_response(userStorage[0],headers= {
-        'Access-Control-Allow-Origin': 'null'
-    })
+    return web.json_response(userStorage[0])
 
 async def handler(request):
     return web.json_response(userStorage[0])
@@ -36,7 +34,7 @@ async def handleAddingUsers(request):
             storageConnection.addUser(first_name,second_name)
             return web.Response(text=f'User listed below has been added.\n{first_name} {second_name}')
         except:
-            return web.Response('There has been problem with processing your data')
+            return web.HTTPError(406)
     else:
         return web.Response(text="Error! Nothing was provided to be added.")
 
@@ -56,11 +54,11 @@ async def handleAddingPosts(request):
             post_text = body['post_text']
             print(f'{post_text}\n by {author_id}')
             storageConnection.addPost(author_id,post_text)
-            return web.Response(text=f'Post listed below has been added.\n{post_text}')
+            return web.HTTPCreated()
         except:
-            return web.Response(text='There has been problem with proccessing your data')
+            return web.HTTPNotAcceptable()
     else:
-        return web.Response(text="Error! Nothing was provided to be added.")
+        return web.HTTPBadRequest()
 
 app = web.Application()
 app.add_routes([web.get('/', handle),
@@ -71,6 +69,9 @@ app.add_routes([web.get('/', handle),
                 web.post('/add-user', handleAddingUsers),
 #                web.post('/add-post', handleAddingPosts)
                 ])
+
+
+# cors setup
 
 cors = aiohttp_cors.setup(app)
 

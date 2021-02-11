@@ -41,12 +41,19 @@ class Storage:
 
     def getUserDetailsFromId(self,id):
         users_number = len(self.storage['users'])
-        if id-1 >= users_number:
+        tempId : int
+        tempIndex : int
+        if id < 0:
+            return 'error'
+        elif id-1 >= users_number:
             tempId = self.storage['users'][users_number-1]['id']
+            tempIndex = users_number-1
+            print('works')
             if id > tempId:
                 return 'error'
         else:
             tempId = self.storage['users'][id-1]['id']
+            tempIndex = id-1
         if tempId != id:
             if tempId > id:
                 for i in range(tempId,-1,-1):
@@ -65,8 +72,30 @@ class Storage:
 
         else :
             print(id, tempId)
-            return self.storage['users'][id-1]
+            return self.storage['users'][tempIndex]
 
+    def deleteUser(self, id):
+        temp = self.getUserDetailsFromId(id)
+        if temp != 'error':
+            index = self.storage['users'].index(temp)
+            print(index)
+            del self.storage['users'][index]
+            self.writeUsersToJSON()
+        else:
+            print('Cannot do, theres no such user')
+
+    def updateUser(self, first_name, second_name, id):
+        temp = self.getUserDetailsFromId(id)
+        if temp != 'error':
+            index = self.storage['users'].index(temp)
+            print(index)
+            temp['id'] = id
+            temp['first_name'] = first_name
+            temp['second_name'] = second_name
+            self.storage['users'][index] = temp
+            self.writeUsersToJSON()
+        else:
+            print('Cannot do, theres no such user') 
     # POST MANAGEMENT PART
 
     def fetchPostsFromJSON(self):
@@ -101,6 +130,62 @@ class Storage:
 
     def listPosts(self):
         return self.storage['posts']
+
+    def getPostDetailsFromId(self,post_id):
+        posts_number = len(self.storage['posts'])
+        tempId : int
+        tempIndex : int
+        if post_id < 0:
+            return 'error'
+        elif post_id-1 >= posts_number:
+            tempId = self.storage['posts'][posts_number-1]['post_id']
+            tempIndex = posts_number-1
+            print('works')
+            if post_id > tempId:
+                return 'error'
+        else:
+            tempId = self.storage['posts'][post_id-1]['post_id']
+            tempIndex = post_id-1
+        if tempId != post_id:
+            if tempId > post_id:
+                for i in range(tempId,-1,-1):
+                    try:
+                        if self.storage['posts'][i]['post_id'] == post_id:
+                            return self.storage['posts'][i]
+                    except:
+                        return 'error'
+            elif tempId < post_id:
+                for i in range(tempId,len(self.storage['posts'])):
+                    try:
+                        if self.storage['posts'][i]['post_id'] == post_id:
+                            return self.storage['posts'][i]
+                    except:
+                        return 'error'
+
+        else :
+            print(post_id, tempId)
+            return self.storage['posts'][tempIndex]
+
+    def deletePost(self, post_id):
+        temp = self.getPostDetailsFromId(post_id)
+        if temp != 'error':
+            index = self.storage['posts'].index(temp)
+            print(index)
+            del self.storage['posts'][index]
+            self.writePostsToJSON()
+        else:
+            print('Cannot do, theres no such post')
+
+    def updatePost(self, post_id, post_text):
+        temp = self.getPostDetailsFromId(post_id)
+        if temp != 'error':
+            index = self.storage['posts'].index(temp)
+            print(index)
+            temp['post_text'] = post_text
+            self.storage['posts'][index] = temp
+            self.writePostsToJSON()
+        else:
+            print('Cannot do, theres no such post') 
 
 
 """ Saving to file
