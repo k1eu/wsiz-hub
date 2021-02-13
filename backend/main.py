@@ -72,6 +72,19 @@ async def handleDeletingPosts(request):
     else:
         return web.HTTPBadRequest()
 
+async def handleEditingPosts(request):
+    if request.can_read_body:
+        body = await request.json()
+        try:
+            post_id = body['post_id']
+            post_text = body['post_text']
+            storageConnection.updatePost(post_id,post_text)
+            return web.HTTPAccepted(text=f'post with id: {post_id} has been edited')
+        except:
+            return web.HTTPNotAcceptable()
+    else:
+        return web.HTTPBadRequest()
+
 app = web.Application()
 app.add_routes([web.get('/', handle),
                 web.get('/users', handleUsers),
@@ -113,6 +126,18 @@ post_posts_route = cors.add(
 delete_posts = cors.add(app.router.add_resource("/delete-post"))
 delete_posts_route = cors.add(
     delete_posts.add_route("DELETE", handleDeletingPosts), {
+        "http://localhost:3000": aiohttp_cors.ResourceOptions(
+            allow_credentials=True,
+            expose_headers=("X-Custom-Server-Header",),
+            allow_headers=("X-Requested-With", "Content-Type"),
+            max_age=3600,
+        )
+    }
+)
+
+edit_posts = cors.add(app.router.add_resource("/edit-post"))
+edit_posts_route = cors.add(
+    edit_posts.add_route("PATCH", handleEditingPosts), {
         "http://localhost:3000": aiohttp_cors.ResourceOptions(
             allow_credentials=True,
             expose_headers=("X-Custom-Server-Header",),

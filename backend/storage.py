@@ -112,6 +112,8 @@ class Storage:
     
     def getPostsMaxId(self) -> int:
         posts_nr = len(self.storage['posts'])
+        if posts_nr < 1:
+            return 0
         return self.storage['posts'][posts_nr-1]['post_id']
     
     def addPost(self, author_id, post_text):
@@ -189,19 +191,3 @@ class Storage:
             self.writePostsToJSON()
         else:
             print('Cannot do, theres no such post') 
-
-
-""" Saving to file
-with open('data.json', 'w') as outfile:
-    json.dump(files.userStorage, outfile)
------
-with open('data.txt') as json_file:
-    data = json.load(json_file)
-    for p in data['people']:
-        print('Name: ' + p['name'])
-        print('Website: ' + p['website'])
-        print('From: ' + p['from'])
-        print('')
-Opening a file
-print(files.userStorage['users'][3]['second_name'])
-"""

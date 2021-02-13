@@ -58,7 +58,7 @@ html {
   flex-direction: column;
   align-items: center;
   width:50vw;
-  background-color: azure;
+  background-color: rgb(241, 241, 241);
   list-style-type: none ;
   padding: 0;
   padding:1%

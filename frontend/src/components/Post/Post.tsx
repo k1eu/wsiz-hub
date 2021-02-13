@@ -9,6 +9,7 @@ interface PostProps {
     creation_time: string
     postValue: string
     deletePostFunction: (post_id:number) => void
+    editPostFunction: (post_id: number, post_text: string) => void
   }
 
 class Post extends React.Component<PostProps, {}> {
@@ -24,9 +25,9 @@ class Post extends React.Component<PostProps, {}> {
             <div className="top-row">
                 <div>{this.props.author_name}</div>
                 <div>{this.props.creation_time}</div>
-                <div>
-                    <button>Edit</button>
-                    <button onClick={()=>this.props.deletePostFunction(this.props.post_id)}>X</button>
+                <div className="close-edit-wrap">
+                    <button className="close-edit-btns" onClick={()=>this.props.editPostFunction(this.props.post_id,this.props.postValue)}>Edit</button>
+                    <button className="close-edit-btns" onClick={()=>this.props.deletePostFunction(this.props.post_id)}>X</button>
                 </div>
             </div>
                 <div className="middle-row-post">

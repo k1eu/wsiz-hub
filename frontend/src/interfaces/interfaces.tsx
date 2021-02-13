@@ -5,6 +5,9 @@ export interface AppState {
     image: string
     imgBase64: string
     imgHiddenPreview: boolean
+    isEditing: boolean
+    editingPostId: number | null
+    editingPostText: string | null
   }
   
 export interface Posts {
