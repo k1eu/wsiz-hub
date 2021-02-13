@@ -60,6 +60,18 @@ async def handleAddingPosts(request):
     else:
         return web.HTTPBadRequest()
 
+async def handleDeletingPosts(request):
+    if request.can_read_body:
+        body = await request.json()
+        try:
+            post_id = body['post_id']
+            storageConnection.deletePost(post_id)
+            return web.HTTPAccepted(text=f'post with {post_id} has been deleted')
+        except:
+            return web.HTTPNotAcceptable()
+    else:
+        return web.HTTPBadRequest()
+
 app = web.Application()
 app.add_routes([web.get('/', handle),
                 web.get('/users', handleUsers),
@@ -89,6 +101,18 @@ get_posts_route = cors.add(
 post_posts = cors.add(app.router.add_resource("/add-post"))
 post_posts_route = cors.add(
     post_posts.add_route("POST", handleAddingPosts), {
+        "http://localhost:3000": aiohttp_cors.ResourceOptions(
+            allow_credentials=True,
+            expose_headers=("X-Custom-Server-Header",),
+            allow_headers=("X-Requested-With", "Content-Type"),
+            max_age=3600,
+        )
+    }
+)
+
+delete_posts = cors.add(app.router.add_resource("/delete-post"))
+delete_posts_route = cors.add(
+    delete_posts.add_route("DELETE", handleDeletingPosts), {
         "http://localhost:3000": aiohttp_cors.ResourceOptions(
             allow_credentials=True,
             expose_headers=("X-Custom-Server-Header",),

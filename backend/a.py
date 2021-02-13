@@ -190,18 +190,8 @@ class Storage:
         else:
             print('Cannot do, theres no such post') 
 
+x= Storage('users.json','posts.json')
+x.fetchPostsFromJSON()
+x.fetchUserFromJSON()
 
-""" Saving to file
-with open('data.json', 'w') as outfile:
-    json.dump(files.userStorage, outfile)
------
-with open('data.txt') as json_file:
-    data = json.load(json_file)
-    for p in data['people']:
-        print('Name: ' + p['name'])
-        print('Website: ' + p['website'])
-        print('From: ' + p['from'])
-        print('')
-Opening a file
-print(files.userStorage['users'][3]['second_name'])
-"""
+print(x.getPostDetailsFromId(4))

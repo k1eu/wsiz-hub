@@ -19,6 +19,7 @@ export interface Posts {
 export interface PostProps {
     author_id: number,
     author_name: string,
-    creation_time: string
-    postValue: string
+    creation_time: string,
+    postValue: string,
+    
 }

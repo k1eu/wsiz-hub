@@ -11,15 +11,16 @@ class App extends React.Component<{},AppState> {
     this.state = {
       postValue: "",
       posts: [],
-      userID: 2,
+      userID: 5,
       image: '',
       imgBase64: '',
       imgHiddenPreview: true
     }
+    // Binding
     this.handlePostInputChange = this.handlePostInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleSubmit2 = this.handleSubmit2.bind(this);
     this.onImageChange = this.onImageChange.bind(this)
+    this.deletePost = this.deletePost.bind(this)
   };
   
   
@@ -58,6 +59,21 @@ class App extends React.Component<{},AppState> {
       
   }
 
+  deletePost(post_id: number) {
+    axios.delete('http://localhost:8080/delete-post', {
+        data: {
+            post_id: post_id
+        }
+    })
+    .then((res) => {
+        console.log(res)
+        this.fetchPosts()
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+}
+
   handlePostInputChange(e: any) {
     this.setState({postValue : e.target.value});
   }
@@ -65,10 +81,7 @@ class App extends React.Component<{},AppState> {
     this.addPost()
     alert('sent')
   }
-  handleSubmit2(e: any) {
-    const imageToBase64 = require('image-to-base64')
-    alert(this.state.image)
-  }
+
   onImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]){
       this.setState({
@@ -84,7 +97,7 @@ class App extends React.Component<{},AppState> {
         <header className="App-header">
           Starter Project
         </header>
-        <form onSubmit={this.handleSubmit2} className="post-form">
+        <form onSubmit={this.handleSubmit} className="post-form">
           <div className="post-and-img">
             <textarea placeholder="You can write something here..." value={this.state.postValue} onChange={this.handlePostInputChange} className={this.state.imgHiddenPreview ? 'post-text-full' : 'post-text'} />
             <img className="add-img-preview" src={this.state.image} hidden={this.state.imgHiddenPreview}/>
@@ -96,7 +109,7 @@ class App extends React.Component<{},AppState> {
         </form>
         <ul className="posts-view-wrapper">
           {this.state.posts.map((post) => (
-            <Post author_id={post.author_id} author_name={post.author_name} creation_time={post.creation_time} postValue={post.post_text}></Post>
+            <Post post_id={post.post_id} author_id={post.author_id} author_name={post.author_name} creation_time={post.creation_time} postValue={post.post_text} deletePostFunction={this.deletePost}></Post>
           ))}
         </ul>
       </div>
